@@ -1,0 +1,79 @@
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+import readingTime from 'reading-time'
+
+const postsDirectory = path.join(process.cwd(), 'posts')
+
+export interface PostMeta {
+  slug: string
+  title: string
+  description: string
+  date: string
+  author: string
+  tags: string[]
+  featured: boolean
+  readingTime: string
+}
+
+export interface Post extends PostMeta {
+  content: string
+}
+
+export function getAllPosts(): PostMeta[] {
+  if (!fs.existsSync(postsDirectory)) return []
+
+  const fileNames = fs.readdirSync(postsDirectory).filter(f => f.endsWith('.mdx'))
+
+  const posts = fileNames.map((fileName) => {
+    const slug = fileName.replace(/\.mdx$/, '')
+    const fullPath = path.join(postsDirectory, fileName)
+    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const { data, content } = matter(fileContents)
+    const rt = readingTime(content)
+
+    return {
+      slug,
+      title: data.title || '',
+      description: data.description || '',
+      date: data.date || '',
+      author: data.author || 'bluemont',
+      tags: data.tags || [],
+      featured: data.featured || false,
+      readingTime: rt.text,
+    } as PostMeta
+  })
+
+  return posts.sort((a, b) => (a.date < b.date ? 1 : -1))
+}
+
+export function getPostBySlug(slug: string): Post | null {
+  try {
+    const fullPath = path.join(postsDirectory, `${slug}.mdx`)
+    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const { data, content } = matter(fileContents)
+    const rt = readingTime(content)
+
+    return {
+      slug,
+      title: data.title || '',
+      description: data.description || '',
+      date: data.date || '',
+      author: data.author || 'bluemont',
+      tags: data.tags || [],
+      featured: data.featured || false,
+      readingTime: rt.text,
+      content,
+    }
+  } catch {
+    return null
+  }
+}
+
+export function formatDate(dateStr: string): string {
+  return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
