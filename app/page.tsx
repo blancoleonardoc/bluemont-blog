@@ -33,7 +33,7 @@ export default function HomePage() {
           lineHeight: 1.15,
           marginBottom: '1.2rem',
         }}>
-          Investir bem<br />começa com entender.
+          Investir bem<br />começa pelo conhecimento.
         </h1>
         <p style={{
           fontSize: 'clamp(1rem, 2.5vw, 1.1rem)',
