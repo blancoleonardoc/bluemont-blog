@@ -2,23 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import readingTime from 'reading-time'
+import { PostMeta, Post, formatDate } from './types'
+
+export type { PostMeta, Post }
+export { formatDate }
 
 const postsDirectory = path.join(process.cwd(), 'posts')
-
-export interface PostMeta {
-  slug: string
-  title: string
-  description: string
-  date: string
-  author: string
-  tags: string[]
-  featured: boolean
-  readingTime: string
-}
-
-export interface Post extends PostMeta {
-  content: string
-}
 
 export function getAllPosts(): PostMeta[] {
   if (!fs.existsSync(postsDirectory)) return []
@@ -68,12 +57,4 @@ export function getPostBySlug(slug: string): Post | null {
   } catch {
     return null
   }
-}
-
-export function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
 }
