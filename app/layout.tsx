@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     default: 'Blog — bluemont',
     template: '%s | bluemont',
   },
-  description: 'Educação financeira e investimentos para quem quer investir melhor. Artigos claros, sem jargão.',
+  description: 'Educação financeira e investimentos para quem quer investir melhor.',
   openGraph: {
     siteName: 'Blog bluemont',
     locale: 'pt_BR',
